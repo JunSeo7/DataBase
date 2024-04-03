@@ -65,11 +65,11 @@ public class Board {
 
 		int result = pstmt.executeUpdate();
 
-		if (result != 1) {
-			System.out.println("게시글 작성 실패하셨습니다.");
+		if (result == 1) {
+			System.out.println("게시글 작성 성공하셨습니다.");
 			return;
 		}
-		System.out.println("게시글 작성 성공하셨습니다.");
+		System.out.println("게시글 작성 실패하셨습니다.");
 
 	}
 
