@@ -87,7 +87,7 @@ public class BoardController {
 		Connection conn = JDBCTemplate.getConn();
 
 		String sql = "UPDATE BOARD SET DEL_YN = 'Y' WHERE NO = ? AND WRITER_NO = ?";
-		System.out.print("삭제할 게시물 번호");
+		System.out.print("삭제할 게시물 번호 : ");
 		String no = Main.SC.nextLine();
 
 		PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -97,7 +97,7 @@ public class BoardController {
 		int result = pstmt.executeUpdate();
 
 		if (result != 1) {
-			System.out.println("자신의 게시물만 삭제할 수 있습니다.");
+			System.out.println("자신의 게시물 또는 삭제되지 않은 게시물만 삭제할 수 있습니다.");
 			return;
 		}
 		System.out.println("게시물이 삭제되었습니다.");
@@ -112,7 +112,7 @@ public class BoardController {
 
 		Connection conn = JDBCTemplate.getConn();
 
-		String sql = "UPDATE BOARD SET TITLE = ? WHERE NO = ? AND DEL_YN = 'Y' AND WRITER_NO = ?";
+		String sql = "UPDATE BOARD SET TITLE = ? WHERE NO = ? AND DEL_YN = 'N' AND WRITER_NO = ?";
 
 		System.out.print("게시물 번호 선택 : ");
 		String no = Main.SC.nextLine();
@@ -120,14 +120,14 @@ public class BoardController {
 		String title = Main.SC.nextLine();
 
 		PreparedStatement pstmt = conn.prepareStatement(sql);
-		pstmt.setString(1, no);
-		pstmt.setString(2, title);
+		pstmt.setString(1, title);
+		pstmt.setString(2, no);
 		pstmt.setString(3, Main.loginMember.getNo());
 
 		int result = pstmt.executeUpdate();
 
 		if (result != 1) {
-			System.out.println("자신의 게시물만 변경할 수 있습니다.");
+			System.out.println("자신의 게시물 또는 삭제되지 않은 게시물만 변경할 수 있습니다.");
 			return;
 		}
 		System.out.println("해당 게시물의 제목이 변경되었습니다.");
@@ -142,7 +142,7 @@ public class BoardController {
 
 		Connection conn = JDBCTemplate.getConn();
 
-		String sql = "UPDATE BOARD SET CONTENT = ? WHERE NO = ? AND DEL_YN = 'Y' AND WRITER_NO = ?";
+		String sql = "UPDATE BOARD SET CONTENT = ? WHERE NO = ? AND DEL_YN = 'N' AND WRITER_NO = ?";
 
 		System.out.print("게시물 번호 선택 : ");
 		String no = Main.SC.nextLine();
@@ -150,14 +150,14 @@ public class BoardController {
 		String content = Main.SC.nextLine();
 
 		PreparedStatement pstmt = conn.prepareStatement(sql);
-		pstmt.setString(1, no);
-		pstmt.setString(2, content);
+		pstmt.setString(1, content);
+		pstmt.setString(2, no);
 		pstmt.setString(3, Main.loginMember.getNo());
 
 		int result = pstmt.executeUpdate();
 
 		if (result != 1) {
-			System.out.println("자신의 게시물만 변경할 수 있습니다.");
+			System.out.println("자신의 게시물 또는 삭제되지 않은 게시물만 변경할 수 있습니다.");
 			return;
 		}
 		System.out.println("해당 게시물의 내용이 변경되었습니다.");
@@ -178,41 +178,24 @@ public class BoardController {
 		while (rs.next()) {
 			String no = rs.getString("NO");
 			String title = rs.getString("TITLE");
-			String enrollDate = rs.getString("ENROLL_DATE");
 			String nick = rs.getString("NICK");
+			String enrollDate = rs.getString("ENROLL_DATE");
 
-			bVo = new BoardVo(no, title, null, enrollDate, nick, null);
+			bVo = new BoardVo(no, title, null, nick, enrollDate, null);
 			voList.add(bVo);
 		}
 
-		System.out.print("번호");
-		System.out.print(" | ");
-		System.out.print("제목");
-		System.out.print(" | ");
-		System.out.print("작성자");
-		System.out.print(" | ");
-		System.out.print("작성일시");
-		System.out.println();
+		System.out.printf("%-5s | %-12s | %-18s | %-20s ", "번호", "제목", "작성자", "작성일자");
 
 		for (BoardVo vo : voList) {
-			System.out.print(vo.getNo());
-			System.out.print(" | ");
-			System.out.print(vo.getTitle());
-			System.out.print(" | ");
-			System.out.print(vo.getWriterNo());
-			System.out.print(" | ");
-			System.out.print(vo.getEnrollDate());
 			System.out.println();
+			System.out.printf("%-5s | %-12s | %-18s | %-20s", vo.getNo(), vo.getTitle(), vo.getWriterNo(),
+					vo.getEnrollDate());
 		}
 
 	}
 
 	private void selectByWriterName() throws Exception {
-
-		if (Main.loginMember == null) {
-			System.out.println("로그인 후 이용 가능합니다.");
-			return;
-		}
 
 		Connection conn = JDBCTemplate.getConn();
 
@@ -226,18 +209,22 @@ public class BoardController {
 
 		ResultSet rs = pstmt.executeQuery();
 
+		List<BoardVo> voList = new ArrayList<BoardVo>();
+		BoardVo bVo = null;
 		while (rs.next()) {
 			String no = rs.getString("NO");
 			String title = rs.getString("TITLE");
 			String enrollDate = rs.getString("ENROLL_DATE");
 
-			System.out.print("번호	: " + no);
-			System.out.println();
-			System.out.print("제목	: " + title);
-			System.out.println();
-			System.out.println("작성일시	: " + enrollDate);
-			System.out.println("-------------------------");
+			bVo = new BoardVo(no, title, null, null, enrollDate, null);
+			voList.add(bVo);
 
+		}
+
+		System.out.printf("%-5s | %-12s | %-18s ", "번호", "제목", "작성일자");
+		for (BoardVo vo : voList) {
+			System.out.println();
+			System.out.printf("%-5s | %-12s | %-20s ", vo.getNo(), vo.getTitle(), vo.getEnrollDate());
 		}
 
 	}
