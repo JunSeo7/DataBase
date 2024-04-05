@@ -255,10 +255,10 @@ public class AnnouncementBoard {
 			String enrollDate = rs.getString("ENROLL_DATE");
 
 			Vo = new AnnouncementBoardVo();
-			vo.setNo("no2");
-			vo.setTitle("title");
-			vo.setContent("content");
-			vo.setEnrollDate("enrollDate");
+			vo.setNo(no2);
+			vo.setTitle(title);
+			vo.setContent(content);
+			vo.setEnrollDate(enrollDate);
 			
 		}
 		System.out.println("-----------------------------------------------------------------------");
