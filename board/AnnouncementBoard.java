@@ -246,24 +246,28 @@ public class AnnouncementBoard {
 
 		ResultSet rs = pstmt.executeQuery();
 
-		List<AnnouncementBoardVo> voList = new ArrayList<AnnouncementBoardVo>();
+		
 		AnnouncementBoardVo Vo = null;
-		while (rs.next()) {
+		if (rs.next()) {
 			String no2 = rs.getString("NO");
 			String title = rs.getString("TITLE");
 			String content = rs.getString("CONTENT");
 			String enrollDate = rs.getString("ENROLL_DATE");
 
-			Vo = new AnnouncementBoardVo(no2, title, content, null, enrollDate, null);
-			voList.add(Vo);
+			Vo = new AnnouncementBoardVo();
+			vo.setNo("no2");
+			vo.setTitle("title");
+			vo.setContent("content");
+			vo.setEnrollDate("enrollDate");
+			
 		}
 		System.out.println("-----------------------------------------------------------------------");
 		System.out.printf("%-5s | %-12s | %-20s | %-20s%n ", "번호", "제목", "내용", "작성일자");
 
-		for (AnnouncementBoardVo vo : voList) {
-			System.out.printf("%-5s | %-12s | %-20s | %-20s%n ", vo.getNo(), vo.getTitle(), vo.getContent(),
-					vo.getEnrollDate());
-		}
+		
+		System.out.printf("%-5s | %-12s | %-20s | %-20s%n ", vo.getNo(), vo.getTitle(), vo.getContent(),
+		vo.getEnrollDate());
+		
 		System.out.println();
 		System.out.println("-----------------------------------------------------------------------");
 
